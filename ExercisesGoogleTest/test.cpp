@@ -1,7 +1,10 @@
 #include "Problems.h"
 #include "gtest/gtest.h"
 
-TEST(PrimitiveTypes, CountBits) {
+#include <limits>
+
+TEST(PrimitiveTypes, CountBits)
+{
 	auto count = CountBits(0b10001001);
 	ASSERT_EQ(count, 3);
 
@@ -12,7 +15,8 @@ TEST(PrimitiveTypes, CountBits) {
 	ASSERT_EQ(count, 0);
 }
 
-TEST(PrimitiveTypes, Parity) {
+TEST(PrimitiveTypes, Parity)
+{
 	auto parity = Parity(0b10001001);
 	ASSERT_EQ(parity, 1);
 
@@ -27,4 +31,16 @@ TEST(PrimitiveTypes, Parity) {
 
 	parity = Parity(1);
 	ASSERT_EQ(parity, 1);
+
+	parity = Parity(std::numeric_limits<long long unsigned>::max());
+	ASSERT_EQ(parity, 0);
+}
+
+TEST(PrimitiveTypes, powerOf2)
+{
+	ASSERT_EQ(helper::powerBase2(0), 1);
+	ASSERT_EQ(helper::powerBase2(1), 2);
+	ASSERT_EQ(helper::powerBase2(2), 4);
+	ASSERT_EQ(helper::powerBase2(3), 8);
+	ASSERT_EQ(helper::powerBase2(16), 65536);
 }
