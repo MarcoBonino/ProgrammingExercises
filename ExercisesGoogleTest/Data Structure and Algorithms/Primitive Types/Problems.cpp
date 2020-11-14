@@ -5,9 +5,11 @@
 #include <array>
 #include <algorithm>
 #include <cassert>
+#include <cstdint>
 
 #include <iostream>
 #include <typeinfo>
+#include <type_traits>
 
 /* Count number of bits set to 1 */
 short CountBits(unsigned int x)
@@ -104,4 +106,42 @@ long long SwapBits(long long x, int i, int j)
 	}
 
 	return x;
+}
+
+template <size_t CACHE_SIZE>
+std::array<uint8_t, CACHE_SIZE> precomputeReverseBitsTable()
+{
+	std::array<uint8_t, CACHE_SIZE> table;
+	constexpr auto bit_width = 8 * sizeof(std::remove_pointer<decltype(table.data())>);
+	for (auto i = 0; i < CACHE_SIZE; ++i)
+	{
+		uint8_t reverse = 0;
+		for (auto bit_pos = 0; bit_pos < bit_width; ++bit_pos)
+		{
+			// extract bit in in position bit_pos from i
+			bool set = ((i >> bit_pos) & 1) != 0;
+			reverse |= static_cast<uint8_t>(set) << (bit_width - bit_pos - 1);
+		}
+		table[i] = reverse;
+	}
+	return table;
+}
+
+unsigned long long ReverseBits(unsigned long long x)
+{
+	constexpr short BIT_WIDTH = sizeof(uint8_t) * 8;
+	constexpr unsigned CACHE_SIZE = helper::powerBase2(BIT_WIDTH);
+	constexpr unsigned mask = CACHE_SIZE - 1;
+	static const std::array<uint8_t, CACHE_SIZE> reverseBitsCache = precomputeReverseBitsTable<CACHE_SIZE>();
+
+	unsigned long long reversed = 0;
+
+	for (auto i = 0; i < 8 * sizeof(x) / BIT_WIDTH; ++i)
+	{
+		reversed <<= BIT_WIDTH;
+		reversed |= reverseBitsCache[x & mask];
+		x >>= BIT_WIDTH;
+	}
+
+	return reversed;
 }

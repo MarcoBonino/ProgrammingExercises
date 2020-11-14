@@ -66,3 +66,11 @@ TEST(PrimitiveTypes, SwapBits)
 	swapped = SwapBits(value, 0, 63);
 	ASSERT_EQ(swapped, 0x1);
 }
+
+TEST(PrimitiveTypes, ReverseBits)
+{
+	ASSERT_EQ(ReverseBits(1ULL << 63), 1);
+	ASSERT_EQ(ReverseBits(1), 1ULL << 63);
+	ASSERT_EQ(ReverseBits(0), 0);
+	ASSERT_EQ(ReverseBits(0x123), 0xC480000000000000);
+}
