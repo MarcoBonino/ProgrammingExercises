@@ -4,6 +4,7 @@
 #include <mutex>
 #include <array>
 #include <algorithm>
+#include <cassert>
 
 #include <iostream>
 #include <typeinfo>
@@ -83,4 +84,24 @@ short ParityImplPrecomputed(unsigned long long x)
 	parity ^= parityCache[x & mask];
 
 	return parity;
+}
+
+long long SwapBits(long long x, int i, int j)
+{
+	assert((i >= 0) && (i < 8 * sizeof(x)));
+	assert((j >= 0) && (j < 8 * sizeof(x)));
+
+	// if the 2 bits are different we swap them
+	if (((x >> i) & 1) != ((x >> j) & 1))
+	{
+		long long mask_i = 1ULL << i;
+		long long mask_j = 1ULL << j;
+		/* x ^ 0 = x
+		*  x ^ 1 = ~x
+		*  if we negate both bits at position i and j we are swapping them
+		*/
+		x = x ^ (mask_i | mask_j);
+	}
+
+	return x;
 }

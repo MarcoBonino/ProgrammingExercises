@@ -44,3 +44,25 @@ TEST(PrimitiveTypes, powerOf2)
 	ASSERT_EQ(helper::powerBase2(3), 8);
 	ASSERT_EQ(helper::powerBase2(16), 65536);
 }
+
+TEST(PrimitiveTypes, SwapBits)
+{
+	long long value = 0xFFFF;
+	long long swapped = SwapBits(value, 0, 15);
+	ASSERT_EQ(swapped, value);
+
+	swapped = SwapBits(value, 0, 16);
+	ASSERT_NE(swapped, value);
+	ASSERT_EQ(swapped, 0x1FFFE);
+
+	value = 0;
+	swapped = SwapBits(value, 2, 3);
+	ASSERT_EQ(swapped, value);
+	ASSERT_EQ(swapped, 0);
+
+	value = 1ULL << 63; //MSB
+	swapped = SwapBits(value, 63, 0);
+	ASSERT_EQ(swapped, 0x1);
+	swapped = SwapBits(value, 0, 63);
+	ASSERT_EQ(swapped, 0x1);
+}
