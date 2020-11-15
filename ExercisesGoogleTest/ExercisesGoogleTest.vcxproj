@@ -36,7 +36,8 @@
     <ClInclude Include="Problems.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Data Structure and Algorithms\Primitive Types\Problems.cpp" />
+    <ClCompile Include="Data Structure and Algorithms\Arrays.cpp" />
+    <ClCompile Include="Data Structure and Algorithms\PrimitiveTypes.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
