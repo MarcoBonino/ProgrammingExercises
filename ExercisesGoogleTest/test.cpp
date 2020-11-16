@@ -1,7 +1,9 @@
 #include "Problems.h"
 #include "gtest/gtest.h"
+#include "gmock/gmock.h"
 
 #include <limits>
+#include <vector>
 
 TEST(PrimitiveTypes, CountBits)
 {
@@ -73,4 +75,47 @@ TEST(PrimitiveTypes, ReverseBits)
 	ASSERT_EQ(ReverseBits(1), 1ULL << 63);
 	ASSERT_EQ(ReverseBits(0), 0);
 	ASSERT_EQ(ReverseBits(0x123), 0xC480000000000000);
+}
+
+TEST(Arrays_EvenOdd, emptyArray)
+{
+	std::vector<int> v;
+	EvenOdd(&v);
+	ASSERT_TRUE(v.empty());
+}
+
+TEST(Arrays_EvenOdd, alreadyOrdered)
+{
+	const std::vector<int> v_orig{ 2, 6, 10, 2, 0, 4, 7, 19, 23, 5, 5, 5, 7, 9 };
+	std::vector<int> v_mod(v_orig);
+	EvenOdd(&v_mod);
+	ASSERT_THAT(v_mod, ::testing::ElementsAreArray(v_orig));
+}
+
+MATCHER(first_odd_implies_second_odd, "first element is odd and second even!")
+{
+	auto isOdd = [](auto x) -> bool { return x & 1; };
+	//std::cout << "Compring " << arg[0] << " " << arg[1] << std::endl;
+	return !isOdd(arg[0]) || isOdd(arg[1]);
+}
+
+TEST(Arrays_EvenOdd, simpleTest_lambda)
+{
+	std::vector<int> v{ 1, 2, 7, 4, 8, 9, 6, 3 };
+	EvenOdd(&v);
+	auto isOdd = [](auto x) -> bool { return x & 1; };
+	for (size_t i = 0; i < v.size() - 1; ++i)
+	{
+		ASSERT_TRUE(!isOdd(v[i]) || isOdd(v[i + 1]));
+	}
+}
+
+TEST(Arrays_EvenOdd, simpleTest_matcher_with_iterator)
+{
+	std::vector<int> v{ 1, 2, 7, 4, 8, 9, 6, 3 };
+	EvenOdd(&v);
+	for (auto it = v.begin(); it != v.end() - 1; ++it)
+	{
+		ASSERT_THAT(it, first_odd_implies_second_odd());
+	}
 }
