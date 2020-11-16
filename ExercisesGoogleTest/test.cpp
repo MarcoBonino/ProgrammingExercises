@@ -2,6 +2,7 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
+#include <algorithm>
 #include <limits>
 #include <vector>
 
@@ -118,4 +119,12 @@ TEST(Arrays_EvenOdd, simpleTest_matcher_with_iterator)
 	{
 		ASSERT_THAT(it, first_odd_implies_second_odd());
 	}
+}
+
+TEST(Arrays_EvenOdd, simpleTest)
+{
+	std::vector<int> v{ 1, 2, 7, 4, 8, 9, 6, 3 };
+	EvenOdd(&v);
+	auto isEven = [](auto x) -> bool { return !(x & 1); };
+	ASSERT_TRUE(std::is_partitioned(v.begin(), v.end(), isEven));
 }
